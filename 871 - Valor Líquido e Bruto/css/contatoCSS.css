@@ -1,0 +1,31 @@
+* { target-new: tab ! important }
+
+h2 {
+	color: darkgreen;
+}
+
+p {
+	color: darkblue;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 3px;
+	font-weight: normal;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+caption {
+	font-size: 23px;
+	font-weight: bold;
+}

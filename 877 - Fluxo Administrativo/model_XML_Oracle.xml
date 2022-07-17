@@ -1,0 +1,62 @@
+<gadget>
+  <prompt-parameters>
+    <parameter id="CODPARC_LIST" description="Lista de cods Parceiros" metadata="multiList:Text" listType="sql" required="false" keep-last="false" keep-date="false">
+      <expression type="SQL"><![CDATA[SELECT CODPARC AS VALUE, NOMEPARC AS LABEL FROM TGFPAR WHERE ROWNUM < 20 ORDER BY VALUE]]></expression>
+    </parameter>
+  </prompt-parameters>
+  <level id="lvl_ulnyo4" description="Primeiro">
+    <args>
+      <arg id="CODPARC" type="integer"/>
+    </args>
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="V" tamanhoRelativo="50">
+        <html5component id="html5_ulnyo5" entryPoint="model_Parceiro.jsp"/>
+      </container>
+      <container orientacao="V" tamanhoRelativo="50">
+        <html5component id="html5_ulnyo6" entryPoint="model_Contato.jsp"/>
+      </container>
+    </container>
+  </level>
+  <level id="lvl_ulnyo9" description="Segundo">
+    <args>
+      <arg id="CODPARC" type="integer"/>
+    </args>
+    <container orientacao="V" tamanhoRelativo="100">
+      <container orientacao="V" tamanhoRelativo="100">
+        <chart id="cht_ulnypa" type="pizza">
+          <title><![CDATA[Receita e Despesa do Parceiro :CODPARC]]></title>
+          <expression type="sql" data-source="MGEDS"><![CDATA[SELECT 
+        DISTINCT RECDESP,
+        SUM(VLRDESDOB) AS VLRDESDOB
+FROM 
+(
+    SELECT
+        CASE
+            WHEN FIN.RECDESP = -1 THEN 'Despesa'
+            WHEN FIN.RECDESP = 1 THEN 'Receita'
+            ELSE 'Outros'
+        END AS RECDESP,
+        VLRDESDOB
+     FROM 
+            TGFFIN FIN 
+     WHERE 
+            FIN.CODPARC = :CODPARC
+            AND FIN.DHBAIXA > ADD_MONTHS(TRUNC(SYSDATE), -1)
+)
+GROUP BY RECDESP
+]]></expression>
+          <metadata>
+            <field name="RECDESP" label="Tipo" type="S" visible="true" useFooter="false"/>
+            <field name="VLRDESDOB" label="Valor" type="F" visible="true" useFooter="false"/>
+          </metadata>
+          <series>
+            <serie type="pizza">
+              <field>VLRDESDOB</field>
+              <nameField>RECDESP</nameField>
+            </serie>
+          </series>
+        </chart>
+      </container>
+    </container>
+  </level>
+</gadget>
